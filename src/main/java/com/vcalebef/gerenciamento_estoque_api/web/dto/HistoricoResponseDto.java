@@ -1,6 +1,7 @@
 package com.vcalebef.gerenciamento_estoque_api.web.dto;
 
 import com.vcalebef.gerenciamento_estoque_api.enums.TipoBebida;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

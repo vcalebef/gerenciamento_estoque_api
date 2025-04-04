@@ -2,6 +2,7 @@ package com.vcalebef.gerenciamento_estoque_api.web.controller;
 
 import com.vcalebef.gerenciamento_estoque_api.entity.Secao;
 import com.vcalebef.gerenciamento_estoque_api.enums.TipoBebida;
+import com.vcalebef.gerenciamento_estoque_api.exception.TypeDrinkInvalidException;
 import com.vcalebef.gerenciamento_estoque_api.service.SecaoService;
 import com.vcalebef.gerenciamento_estoque_api.web.dto.IncluirBebidaDto;
 import com.vcalebef.gerenciamento_estoque_api.web.dto.SecaoResponseDto;
@@ -25,7 +26,7 @@ public class SecaoController {
     @PostMapping("/{idSecao}/entrada")
     public ResponseEntity<SecaoResponseDto> incluirBebida(
             @PathVariable Long idSecao ,
-            @Valid @RequestBody IncluirBebidaDto incluirBebidaDto) {
+            @Valid @RequestBody IncluirBebidaDto incluirBebidaDto) throws TypeDrinkInvalidException {
 
         SecaoResponseDto responseDto = secaoService.adicionarBebida(idSecao, incluirBebidaDto);
 
@@ -43,7 +44,7 @@ public class SecaoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Secao> getById(@PathVariable Long id) {
+    public ResponseEntity<Secao> getSecaoById(@PathVariable Long id) {
         Secao secao = secaoService.buscarPorId(id);
         return ResponseEntity.ok(secao);
     }
@@ -61,7 +62,7 @@ public class SecaoController {
     }
 
     @GetMapping("/locaisDisponiveis/{volume}/{tipoBebida}")
-    public ResponseEntity<List<SecaoResponseDto>> getLocaisDisponiveis(
+    public ResponseEntity<List<SecaoResponseDto>> getSecoesDisponiveis(
             @PathVariable TipoBebida tipoBebida,
             @PathVariable BigDecimal volume) {
 
@@ -71,7 +72,7 @@ public class SecaoController {
     }
 
     @GetMapping("locaisDisponiveisVenda/{tipoBebida}")
-    public ResponseEntity<List<SecaoResponseDto>> getLocaisDisponiveis(
+    public ResponseEntity<List<SecaoResponseDto>> getSecoesDisponiveisVenda(
             @PathVariable TipoBebida tipoBebida) {
 
         List<Secao> secoes = secaoService.consultarSecoesDisponiveisVenda(tipoBebida);

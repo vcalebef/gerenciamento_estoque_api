@@ -3,6 +3,8 @@ package com.vcalebef.gerenciamento_estoque_api.web.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vcalebef.gerenciamento_estoque_api.enums.TipoBebida;
 import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
@@ -15,7 +17,9 @@ public class SecaoResponseDto {
 
     @JsonProperty("secao_id")
     private Long idSecao;
+
     private TipoBebida tipo;
+
     private BigDecimal volumeAtual;
 
 }

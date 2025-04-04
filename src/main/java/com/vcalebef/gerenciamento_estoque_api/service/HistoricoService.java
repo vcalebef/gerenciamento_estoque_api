@@ -7,6 +7,8 @@ import com.vcalebef.gerenciamento_estoque_api.web.dto.HistoricoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,18 @@ public class HistoricoService {
                         h.getAcao(),
                         h.getResponsavel()))
                 .collect(Collectors.toList());
+    }
+
+    public void registrarHistorico(Long idSecao, TipoBebida tipo, BigDecimal volume, String acao, String responsavel) {
+        Historico historico = new Historico();
+        historico.setIdSecao(idSecao);
+        historico.setTipoBebida(tipo);
+        historico.setVolume(volume);
+        historico.setHorario(LocalTime.now());
+        historico.setAcao(acao);
+        historico.setResponsavel(responsavel);
+
+        historicoRepository.save(historico);
     }
 
 }
