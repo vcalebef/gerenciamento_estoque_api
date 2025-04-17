@@ -1,0 +1,263 @@
+openapi: 3.0.0
+info:
+  title: Gerenciamento de Estoque API
+  version: 1.0.0
+paths:
+  /api/v1/secoes/{idSecao}/entrada:
+    post:
+      summary: Incluir bebida na seção
+      parameters:
+        - name: idSecao
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncluirBebidaDto'
+      responses:
+        '200':
+          description: Bebida incluída com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecaoResponseDto'
+
+  /api/v1/secoes/venda:
+    post:
+      summary: Vender bebida
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VenderBebidaDto'
+      responses:
+        '200':
+          description: Venda realizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SecaoResponseDto'
+
+  /api/v1/secoes/{id}:
+    get:
+      summary: Buscar seção por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Seção encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secao'
+
+  /api/v1/secoes:
+    get:
+      summary: Listar todas as seções
+      responses:
+        '200':
+          description: Lista de seções
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Secao'
+
+  /api/v1/secoes/volumeTotal/{tipoBebida}:
+    get:
+      summary: Consultar volume total por tipo de bebida
+      parameters:
+        - name: tipoBebida
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/TipoBebida'
+      responses:
+        '200':
+          description: Volume total retornado
+          content:
+            application/json:
+              schema:
+                type: number
+                format: double
+
+  /api/v1/secoes/locaisDisponiveis/{volume}/{tipoBebida}:
+    get:
+      summary: Buscar seções disponíveis por volume e tipo de bebida
+      parameters:
+        - name: volume
+          in: path
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: tipoBebida
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/TipoBebida'
+      responses:
+        '200':
+          description: Lista de seções disponíveis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SecaoResponseDto'
+
+  /api/v1/secoes/locaisDisponiveisVenda/{tipoBebida}:
+    get:
+      summary: Buscar seções disponíveis para venda por tipo de bebida
+      parameters:
+        - name: tipoBebida
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/TipoBebida'
+      responses:
+        '200':
+          description: Lista de seções disponíveis para venda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SecaoResponseDto'
+
+  /api/v1/historico:
+    get:
+      summary: Consultar histórico de operações
+      parameters:
+        - name: tipoBebida
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/TipoBebida'
+        - name: idSecao
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: acao
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: ordenacao
+          in: query
+          required: false
+          schema:
+            type: string
+            default: data
+      responses:
+        '200':
+          description: Lista de registros de histórico
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistoricoResponseDto'
+
+components:
+  schemas:
+    IncluirBebidaDto:
+      type: object
+      required:
+        - responsavel
+        - volume
+        - tipo
+      properties:
+        responsavel:
+          type: string
+        volume:
+          type: number
+          format: double
+        tipo:
+          $ref: '#/components/schemas/TipoBebida'
+
+    VenderBebidaDto:
+      type: object
+      required:
+        - volume
+        - tipo
+        - responsavel
+      properties:
+        volume:
+          type: number
+          format: double
+        tipo:
+          $ref: '#/components/schemas/TipoBebida'
+        responsavel:
+          type: string
+
+    SecaoResponseDto:
+      type: object
+      properties:
+        secao_id:
+          type: integer
+          format: int64
+        tipo:
+          $ref: '#/components/schemas/TipoBebida'
+        volumeAtual:
+          type: number
+          format: double
+
+    HistoricoResponseDto:
+      type: object
+      properties:
+        idSecao:
+          type: integer
+          format: int64
+        horario:
+          type: string
+          format: time
+        tipoBebida:
+          $ref: '#/components/schemas/TipoBebida'
+        volume:
+          type: number
+          format: double
+        acao:
+          type: string
+        responsavel:
+          type: string
+
+    Secao:
+      type: object
+      properties:
+        secao_id:
+          type: integer
+          format: int64
+        tipoBebida:
+          $ref: '#/components/schemas/TipoBebida'
+        volumeAtual:
+          type: number
+          format: double
+        capacidadeMaxima:
+          type: number
+          format: double
+        dataDefinicaoTipo:
+          type: string
+          format: date-time
+
+    TipoBebida:
+      type: string
+      enum:
+        - ALCOOLICA
+        - NAO_ALCOOLICA
